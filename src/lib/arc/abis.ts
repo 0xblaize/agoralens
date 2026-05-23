@@ -6,8 +6,8 @@ export const MARKET_REGISTRY_ABI = [
 ] as const;
 
 export const RECEIPT_REGISTRY_ABI = [
-  "function getReceipt(uint256 receiptId) view returns (uint256 receiptId,string agentId,uint256 marketId,bytes32 signalHash,bytes32 reasoningHash,uint16 integrityScore,uint16 agentProbability,uint16 marketProbability,int256 edgeBps,uint256 suggestedUsdcAmount,string decision,uint8 lifecycleState,uint256 timestamp)",
-  "function getReceiptsByAgent(string agentId) view returns ((uint256 receiptId,string agentId,uint256 marketId,bytes32 signalHash,bytes32 reasoningHash,uint16 integrityScore,uint16 agentProbability,uint16 marketProbability,int256 edgeBps,uint256 suggestedUsdcAmount,string decision,uint8 lifecycleState,uint256 timestamp)[])",
+  "function getReceipt(uint256 receiptId) view returns (uint256 receiptId,string agentId,uint256 marketId,bytes32 signalHash,bytes32 reasoningHash,uint16 integrityScore,uint16 agentProbability,uint16 marketProbability,int256 edgeBps,uint256 suggestedUsdcAmount,string decision,uint8 lifecycleState,uint256 timestamp,address writer)",
+  "function getReceiptsByAgent(string agentId) view returns ((uint256 receiptId,string agentId,uint256 marketId,bytes32 signalHash,bytes32 reasoningHash,uint16 integrityScore,uint16 agentProbability,uint16 marketProbability,int256 edgeBps,uint256 suggestedUsdcAmount,string decision,uint8 lifecycleState,uint256 timestamp,address writer)[])",
   "function writeReceipt(string agentId,uint256 marketId,bytes32 signalHash,bytes32 reasoningHash,uint16 integrityScore,uint16 agentProbability,uint16 marketProbability,int256 edgeBps,uint256 suggestedUsdcAmount,string decision) returns (uint256 receiptId)",
   "function updateLifecycleState(uint256 receiptId,uint8 lifecycleState)",
   "event ReceiptWritten(uint256 indexed receiptId,string agentId,uint256 indexed marketId,bytes32 indexed reasoningHash,uint16 integrityScore,string decision)",

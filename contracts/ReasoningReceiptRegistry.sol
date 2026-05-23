@@ -24,6 +24,7 @@ contract ReasoningReceiptRegistry {
         string decision;
         LifecycleState lifecycleState;
         uint256 timestamp;
+        address writer;
     }
 
     uint256 private nextReceiptId = 1;
@@ -72,7 +73,8 @@ contract ReasoningReceiptRegistry {
             suggestedUsdcAmount: suggestedUsdcAmount,
             decision: decision,
             lifecycleState: LifecycleState.ENTRY,
-            timestamp: block.timestamp
+            timestamp: block.timestamp,
+            writer: msg.sender
         });
 
         receiptsByAgentHash[keccak256(bytes(agentId))].push(receiptId);

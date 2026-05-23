@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Contract, JsonRpcProvider, Wallet } from "ethers";
 import { RECEIPT_REGISTRY_ABI } from "@/src/lib/arc/abis";
-import { getArcConfig } from "@/src/lib/arc/config";
+import { getMissingArcWriteConfig } from "@/src/lib/arc/config";
 
 type WriteReceiptRequest = {
   agentId?: string;
@@ -17,15 +17,8 @@ type WriteReceiptRequest = {
 };
 
 export async function POST(request: Request) {
-  const config = getArcConfig();
-  const missing = [
-    ["NEXT_PUBLIC_ARC_RPC_URL", config.rpcUrl],
-    ["NEXT_PUBLIC_RECEIPT_REGISTRY_ADDRESS", config.receiptRegistryAddress],
-    ["ARC_PRIVATE_KEY_TESTNET", process.env.ARC_PRIVATE_KEY_TESTNET],
-  ]
-    .filter(([, value]) => !value)
-    .map(([key]) => key);
-
+  // Check all server-side secrets are present — never log their values
+  const missing = getMissingArcWriteConfig();
   if (missing.length) {
     return NextResponse.json(
       {
@@ -50,32 +43,51 @@ export async function POST(request: Request) {
     "suggestedUsdcAmount",
     "decision",
   ];
-  const missingFields = required.filter((field) => body[field] === undefined || body[field] === "");
+  const missingFields = required.filter(
+    (field) => body[field] === undefined || body[field] === "",
+  );
   if (missingFields.length) {
-    return NextResponse.json({ error: "Missing receipt fields", missingFields }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing receipt fields", missingFields },
+      { status: 400 },
+    );
   }
 
-  const provider = new JsonRpcProvider(config.rpcUrl);
-  const wallet = new Wallet(process.env.ARC_PRIVATE_KEY_TESTNET as string, provider);
-  const contract = new Contract(config.receiptRegistryAddress as string, RECEIPT_REGISTRY_ABI, wallet);
+  try {
+    // ARC_RPC_URL is server-only and never sent to the client
+    const provider = new JsonRpcProvider(process.env.ARC_RPC_URL!);
+    const wallet = new Wallet(process.env.ARC_PRIVATE_KEY_TESTNET!, provider);
+    const contract = new Contract(
+      process.env.NEXT_PUBLIC_RECEIPT_REGISTRY_ADDRESS!,
+      RECEIPT_REGISTRY_ABI,
+      wallet,
+    );
 
-  const tx = await contract.writeReceipt(
-    body.agentId,
-    BigInt(body.marketId as string),
-    body.signalHash,
-    body.reasoningHash,
-    body.integrityScore,
-    body.agentProbability,
-    body.marketProbability,
-    body.edgeBps,
-    BigInt(body.suggestedUsdcAmount as string),
-    body.decision,
-  );
-  const receipt = await tx.wait();
+    const tx = await contract.writeReceipt(
+      body.agentId,
+      BigInt(body.marketId as string),
+      body.signalHash,
+      body.reasoningHash,
+      body.integrityScore,
+      body.agentProbability,
+      body.marketProbability,
+      body.edgeBps,
+      BigInt(body.suggestedUsdcAmount as string),
+      body.decision,
+    );
+    const receipt = await tx.wait();
 
-  return NextResponse.json({
-    mode: "testnet-only",
-    txHash: receipt?.hash ?? tx.hash,
-    receiptRegistry: config.receiptRegistryAddress,
-  });
+    return NextResponse.json({
+      mode: "testnet-only",
+      txHash: receipt?.hash ?? tx.hash,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "Receipt write failed.",
+        detail: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
+    );
+  }
 }

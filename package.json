@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "contracts:compile": "hardhat compile",
+    "contracts:deploy": "hardhat run scripts/deploy.ts --network arcTestnet",
     "contracts:deploy:arc": "hardhat run scripts/deploy-arc-testnet.ts --network arcTestnet"
   },
   "dependencies": {
