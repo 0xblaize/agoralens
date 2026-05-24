@@ -1,8 +1,8 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { BarChart3, ExternalLink, Layers, Shield, Zap } from "lucide-react";
+import { useState } from "react";
+import { BarChart3, ExternalLink, Layers, Shield, Wallet, Zap } from "lucide-react";
 import { getAgentProfile } from "@/src/lib/agent-session";
 
 export function ExecutionView() {
@@ -22,11 +22,8 @@ export function ExecutionView() {
   const edgePct = (edgeBps / 100).toFixed(2);
   const suggestedUsdc = edgeBps > 0 ? (edgeBps / 100).toFixed(2) : "0.00";
 
-  const [agentId, setAgentId] = useState("agoralens-agent-v1");
-  useEffect(() => {
-    const profile = getAgentProfile();
-    if (profile?.agentId) setAgentId(profile.agentId);
-  }, []);
+  const [agentId] = useState(() => getAgentProfile()?.agentId ?? "agoralens-agent-v1");
+  const [agentWallet] = useState(() => getAgentProfile()?.walletAddress ?? null);
   const [deploying, setDeploying] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [receiptId, setReceiptId] = useState<string | null>(null);
@@ -76,11 +73,11 @@ export function ExecutionView() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-white md:text-4xl">Execution</h1>
-        <p className="mt-1 text-sm text-zinc-400">Write reasoning receipt to Arc Testnet (read-only · no funds moved)</p>
+        <p className="mt-1 text-sm text-zinc-400">Write reasoning receipt to Arc Testnet (read-only, no funds moved)</p>
       </div>
 
       {!hasAuditData ? (
-        /* ── No audit data — point user back to MarketCourt ── */
+        /* No audit data: point user back to MarketCourt */
         <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-violet-400/20 bg-violet-500/[0.03] py-20 text-center">
           <Shield size={32} className="text-violet-400/50" />
           <p className="font-semibold text-white">No Audit Data</p>
@@ -91,7 +88,7 @@ export function ExecutionView() {
             href="/marketcourt"
             className="rounded-xl bg-violet-600 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-violet-500"
           >
-            Go to MarketCourt →
+            Go to MarketCourt -&gt;
           </a>
         </div>
       ) : (
@@ -166,6 +163,34 @@ export function ExecutionView() {
             </div>
           </div>
 
+          <div className="rounded-2xl border border-cyan-400/15 bg-cyan-500/[0.04] p-5 md:p-6">
+            <div className="flex items-center gap-2">
+              <Wallet size={15} className="text-cyan-300" />
+              <h2 className="font-bold text-white">Wallet Route</h2>
+              <span className="ml-auto rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-cyan-200">
+                Testnet
+              </span>
+            </div>
+            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              {[
+                ["From", agentWallet ? `Agent Wallet ${agentWallet.slice(0, 6)}...${agentWallet.slice(-4)}` : "Agent Wallet"],
+                ["Network", "Arc Testnet"],
+                ["Fee asset", "USDC"],
+                ["Native gas required", "No"],
+                ["Route type", "Gasless USDC execution"],
+                ["Mode", "Testnet"],
+              ].map(([label, value]) => (
+                <div
+                  key={label}
+                  className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-2.5"
+                >
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-zinc-500">{label}</span>
+                  <span className="min-w-0 truncate text-right text-xs font-semibold text-zinc-200">{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Execution Routing */}
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 md:p-6">
             <div className="flex items-center gap-2">
@@ -228,13 +253,13 @@ export function ExecutionView() {
           {/* Write Receipt CTA */}
           {txHash ? (
             <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/[0.06] p-5">
-              <p className="font-bold text-emerald-400">✓ Reasoning Receipt Written to Arc Testnet</p>
+              <p className="font-bold text-emerald-400">Reasoning Receipt Written to Arc Testnet</p>
               {receiptId && (
                 <p className="mt-1 text-xs text-zinc-400">
                   Receipt ID: <span className="font-mono text-zinc-300">{receiptId}</span>
                 </p>
               )}
-              <p className="mt-1 font-mono text-xs text-zinc-400">TX: {txHash.slice(0, 24)}…</p>
+              <p className="mt-1 font-mono text-xs text-zinc-400">TX: {txHash.slice(0, 24)}...</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {explorerUrl && (
                   <a
@@ -250,7 +275,7 @@ export function ExecutionView() {
                   href="/ledger"
                   className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-bold text-zinc-300 hover:bg-white/[0.08]"
                 >
-                  View in Ledger →
+                  View in Ledger -&gt;
                 </a>
               </div>
             </div>
@@ -260,7 +285,7 @@ export function ExecutionView() {
               disabled={deploying}
               className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-violet-600 via-fuchsia-500 to-violet-600 py-4 text-base font-bold text-white shadow-[0_10px_30px_rgba(124,58,237,0.4)] transition hover:scale-[1.01] disabled:opacity-60"
             >
-              {deploying ? "Writing Receipt to Arc Testnet…" : "Write Reasoning Receipt to Arc Testnet"} <Zap size={18} />
+              {deploying ? "Writing Receipt to Arc Testnet..." : "Write Reasoning Receipt to Arc Testnet"} <Zap size={18} />
             </button>
           )}
 

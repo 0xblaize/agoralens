@@ -52,7 +52,6 @@ export function MarketCourtView({ marketsState, signalsState, preselectedMarketI
   // Animate steps while loading
   useEffect(() => {
     if (!loading) return;
-    setStep(0);
     const interval = setInterval(() => {
       setStep((prev) => {
         if (prev >= AUDIT_STEPS.length - 1) {
@@ -68,6 +67,7 @@ export function MarketCourtView({ marketsState, signalsState, preselectedMarketI
   async function runAudit() {
     if (!selectedMarket) return;
     setLoading(true);
+    setStep(0);
     setError(null);
     setAudit(null);
     try {

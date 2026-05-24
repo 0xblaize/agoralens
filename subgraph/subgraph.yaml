@@ -45,7 +45,7 @@ dataSources:
         - name: ReasoningReceiptRegistry
           file: ../artifacts/contracts/ReasoningReceiptRegistry.sol/ReasoningReceiptRegistry.json
       eventHandlers:
-        - event: ReceiptWritten(indexed uint256,string,indexed uint256,indexed bytes32,uint16,string)
+        - event: ReceiptWritten(indexed uint256,string,indexed uint256,indexed bytes32,uint16,string,address)
           handler: handleReceiptWritten
         - event: LifecycleUpdated(indexed uint256,uint8)
           handler: handleLifecycleUpdated

@@ -113,10 +113,16 @@ export function RadarView({
         marketId?: string | null;
         error?: string;
         detail?: string;
+        missing?: string[];
       };
 
       if (!response.ok || !body.marketId) {
-        throw new Error(body.error ?? body.detail ?? "Could not import market to Arc testnet");
+        // Show both the top-level error and the detail so the root cause is visible
+        const detail = body.detail ? ` - ${body.detail}` : "";
+        const missing = body.missing?.length ? ` (missing: ${body.missing.join(", ")})` : "";
+        throw new Error(
+          (body.error ?? "Could not import market to Arc testnet") + detail + missing,
+        );
       }
 
       router.push(`/marketcourt?marketId=${body.marketId}${activeSignal ? `&signalId=${activeSignal.id}` : ""}`);
@@ -357,7 +363,20 @@ export function RadarView({
                     ? "Importing to Arc..."
                     : "Import to Arc and Send to MarketCourt >"}
                 </button>
-                {importError && <p className="mt-2 text-xs text-rose-300">{importError}</p>}
+                {importError && (
+                  <div className="mt-3 rounded-xl border border-rose-400/20 bg-rose-500/[0.07] p-3">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-rose-400">Import Failed</p>
+                    <p className="mt-1.5 break-words text-[11px] leading-5 text-rose-300">{importError}</p>
+                    <a
+                      href="/api/arc/status"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold text-rose-400/60 hover:text-rose-300"
+                    >
+                      Check Arc testnet status -&gt;
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           ) : (

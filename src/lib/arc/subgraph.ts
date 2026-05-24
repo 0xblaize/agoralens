@@ -77,6 +77,7 @@ export async function fetchReceiptsFromSubgraph(agentId?: string) {
           decision
           lifecycleState
           timestamp
+          writer
           txHash
         }
       }

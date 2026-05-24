@@ -26,6 +26,7 @@ function normalizeReceipt(raw: Record<string, unknown>): ReasoningReceipt {
     decision: String(raw.decision ?? ""),
     lifecycleState: LIFECYCLE_STATES[Number(raw.lifecycleState ?? 0)] ?? "ENTRY",
     timestamp: String(raw.timestamp ?? ""),
+    writer: String(raw.writer ?? ""),
     source: "rpc",
   };
 }

@@ -1,0 +1,47 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_24-d0bebc3ae8be276c1ed6a1780876b607f9a9680c",
+  "solcVersion": "0.8.24",
+  "solcLongVersion": "0.8.24+commit.e11b9ed9",
+  "compilerType": "solc",
+  "userSourceNameMap": {
+    "contracts/ReasoningReceiptRegistry.sol": "project/contracts/ReasoningReceiptRegistry.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "shanghai",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode.linkReferences",
+            "evm.bytecode.object",
+            "evm.bytecode.opcodes",
+            "evm.bytecode.sourceMap",
+            "evm.deployedBytecode.immutableReferences",
+            "evm.deployedBytecode.linkReferences",
+            "evm.deployedBytecode.object",
+            "evm.deployedBytecode.opcodes",
+            "evm.deployedBytecode.sourceMap",
+            "evm.methodIdentifiers"
+          ]
+        }
+      },
+      "remappings": [],
+      "viaIR": true
+    },
+    "sources": {
+      "project/contracts/ReasoningReceiptRegistry.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.24;\r\n\r\ncontract ReasoningReceiptRegistry {\r\n    enum LifecycleState {\r\n        ENTRY,\r\n        MONITORING,\r\n        RESOLUTION_CHECK,\r\n        SETTLED,\r\n        REJECTED\r\n    }\r\n\r\n    struct Receipt {\r\n        uint256 receiptId;\r\n        string agentId;\r\n        uint256 marketId;\r\n        bytes32 signalHash;\r\n        bytes32 reasoningHash;\r\n        uint16 integrityScore;\r\n        uint16 agentProbability;\r\n        uint16 marketProbability;\r\n        int256 edgeBps;\r\n        uint256 suggestedUsdcAmount;\r\n        string decision;\r\n        LifecycleState lifecycleState;\r\n        uint256 timestamp;\r\n        address writer;\r\n    }\r\n\r\n    uint256 private nextReceiptId = 1;\r\n    mapping(uint256 => Receipt) private receipts;\r\n    mapping(bytes32 => uint256[]) private receiptsByAgentHash;\r\n\r\n    event ReceiptWritten(\n        uint256 indexed receiptId,\n        string agentId,\n        uint256 indexed marketId,\n        bytes32 indexed reasoningHash,\n        uint16 integrityScore,\n        string decision,\n        address writer\n    );\n\r\n    event LifecycleUpdated(uint256 indexed receiptId, LifecycleState lifecycleState);\r\n\r\n    function writeReceipt(\r\n        string calldata agentId,\r\n        uint256 marketId,\r\n        bytes32 signalHash,\r\n        bytes32 reasoningHash,\r\n        uint16 integrityScore,\r\n        uint16 agentProbability,\r\n        uint16 marketProbability,\r\n        int256 edgeBps,\r\n        uint256 suggestedUsdcAmount,\r\n        string calldata decision\r\n    ) external returns (uint256 receiptId) {\r\n        require(bytes(agentId).length > 0, \"AGENT_REQUIRED\");\r\n        require(integrityScore <= 100, \"BAD_INTEGRITY_SCORE\");\r\n        require(agentProbability <= 100, \"BAD_AGENT_PROBABILITY\");\r\n        require(marketProbability <= 100, \"BAD_MARKET_PROBABILITY\");\r\n\r\n        receiptId = nextReceiptId++;\r\n        receipts[receiptId] = Receipt({\r\n            receiptId: receiptId,\r\n            agentId: agentId,\r\n            marketId: marketId,\r\n            signalHash: signalHash,\r\n            reasoningHash: reasoningHash,\r\n            integrityScore: integrityScore,\r\n            agentProbability: agentProbability,\r\n            marketProbability: marketProbability,\r\n            edgeBps: edgeBps,\r\n            suggestedUsdcAmount: suggestedUsdcAmount,\r\n            decision: decision,\r\n            lifecycleState: LifecycleState.ENTRY,\r\n            timestamp: block.timestamp,\r\n            writer: msg.sender\r\n        });\r\n\r\n        receiptsByAgentHash[keccak256(bytes(agentId))].push(receiptId);\r\n        emit ReceiptWritten(receiptId, agentId, marketId, reasoningHash, integrityScore, decision, msg.sender);\n    }\r\n\r\n    function updateLifecycleState(uint256 receiptId, LifecycleState lifecycleState) external {\r\n        require(receipts[receiptId].timestamp != 0, \"RECEIPT_NOT_FOUND\");\r\n        receipts[receiptId].lifecycleState = lifecycleState;\r\n        emit LifecycleUpdated(receiptId, lifecycleState);\r\n    }\r\n\r\n    function getReceipt(uint256 receiptId) external view returns (Receipt memory) {\r\n        require(receipts[receiptId].timestamp != 0, \"RECEIPT_NOT_FOUND\");\r\n        return receipts[receiptId];\r\n    }\r\n\r\n    function getReceiptsByAgent(string calldata agentId) external view returns (Receipt[] memory results) {\r\n        uint256[] memory ids = receiptsByAgentHash[keccak256(bytes(agentId))];\r\n        results = new Receipt[](ids.length);\r\n        for (uint256 i = 0; i < ids.length; i++) {\r\n            results[i] = receipts[ids[i]];\r\n        }\r\n    }\r\n}\r\n"
+      }
+    }
+  }
+}

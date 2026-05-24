@@ -12,7 +12,7 @@ import {
   ShieldAlert,
   Zap,
 } from "lucide-react";
-import { courtAgents, flowSteps, problemCards, trustBadges } from "@/src/data/marketing";
+import { flowSteps, problemCards, trustBadges } from "@/src/data/marketing";
 
 export function TrustBadges() {
   return (

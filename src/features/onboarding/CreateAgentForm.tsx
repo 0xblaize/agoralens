@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { Bot, CheckCircle2, ChevronRight, Loader2, WalletCards, LogIn } from "lucide-react";
 import {
   saveAgentProfile,
@@ -8,7 +8,6 @@ import {
   getSavedAgents,
   findAgentById,
   restoreAgentSession,
-  logoutAgent,
 } from "@/src/lib/agent-session";
 
 const riskModes = ["Conservative", "Balanced", "Aggressive"] as const;
@@ -72,6 +71,10 @@ export function CreateAgentForm({ circleStatus, nextPath }: Props) {
 
 // ── Create Agent Panel ─────────────────────────────────────────────────────────
 
+function toAgentSlug(value: string): string {
+  return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
 function CreateAgentPanel({
   circleStatus,
   nextPath,
@@ -87,12 +90,7 @@ function CreateAgentPanel({
   const [error, setError] = useState<string | null>(null);
 
   // Stable random suffix — generated once per form mount, not on every keystroke
-  const suffixRef = useRef(Math.random().toString(36).slice(2, 6));
-  const agentId = useMemo(() => {
-    if (!name.trim()) return "";
-    const slug = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-    return `agora-${slug}-${suffixRef.current}`;
-  }, [name]);
+  const agentId = name.trim() ? `agora-${toAgentSlug(name)}` : "";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -102,13 +100,14 @@ function CreateAgentPanel({
     }
     setSubmitting(true);
     setError(null);
+    const finalAgentId = `${agentId}-${Date.now().toString(36).slice(-4)}`;
 
     try {
       const res = await fetch("/api/agent/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          agentId,
+          agentId: finalAgentId,
           name: name.trim(),
           email: email.trim() || undefined,
           riskMode,
@@ -123,7 +122,7 @@ function CreateAgentPanel({
 
       // Save UI display data to localStorage (not the auth token — that's the cookie)
       const profile: AgentProfile = {
-        agentId,
+        agentId: finalAgentId,
         name: name.trim(),
         email: email.trim() || undefined,
         riskMode,

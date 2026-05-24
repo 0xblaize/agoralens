@@ -75,7 +75,7 @@ async function tryGetFromEvents(): Promise<ExternalMarketState | null> {
     url.searchParams.set("active", "true");
     url.searchParams.set("closed", "false");
     url.searchParams.set("archived", "false");
-    url.searchParams.set("limit", "30");
+    url.searchParams.set("limit", "50"); // fetch more to guarantee minimum 10 after filtering
     url.searchParams.set("order", "startDate");
     url.searchParams.set("ascending", "false"); // newest first
 
@@ -151,10 +151,10 @@ async function tryGetFromEvents(): Promise<ExternalMarketState | null> {
         metadataHash,
       });
 
-      if (markets.length >= 20) break;
+      if (markets.length >= 20) break; // show up to 20, but keep fetching to ensure minimum 10
     }
 
-    if (markets.length === 0) return null; // fall through to markets endpoint
+    if (markets.length < 10) return null; // fall through to markets endpoint if we have fewer than 10
 
     return { status: "configured", source: "Polymarket", markets };
   } catch {
@@ -170,7 +170,7 @@ async function tryGetFromMarkets(): Promise<ExternalMarketState> {
     url.searchParams.set("active", "true");
     url.searchParams.set("closed", "false");
     url.searchParams.set("archived", "false");
-    url.searchParams.set("limit", "50"); // fetch more to have enough after filtering
+    url.searchParams.set("limit", "100"); // fetch more to guarantee minimum 10 available
     url.searchParams.set("order", "startDate"); // newest markets first
     url.searchParams.set("ascending", "false");
 
@@ -200,11 +200,11 @@ async function tryGetFromMarkets(): Promise<ExternalMarketState> {
       .filter((m): m is ExternalMarket => Boolean(m))
       .slice(0, 20);
 
-    if (markets.length === 0) {
+    if (markets.length < 10) {
       return {
         status: "empty",
         source: "Polymarket",
-        message: "No open Polymarket markets available right now.",
+        message: `Only ${markets.length} open Polymarket markets available. At least 10 markets needed for the Radar.`,
       };
     }
 

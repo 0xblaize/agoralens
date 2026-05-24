@@ -32,5 +32,6 @@ type Receipt @entity(immutable: false) {
   decision: String!
   lifecycleState: String!
   timestamp: BigInt!
+  writer: Bytes!
   txHash: Bytes!
 }

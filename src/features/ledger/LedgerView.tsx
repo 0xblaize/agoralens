@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Clock, Copy, Database, Download, ExternalLink, LockKeyhole, Shield } from "lucide-react";
+import { CheckCircle2, Clock, Copy, Database, Download, ExternalLink, Shield, Wallet } from "lucide-react";
 import type { ArcDataState, ArcMarket, ReasoningReceipt, ReceiptLifecycleState } from "@/src/lib/arc/types";
+import { getAgentProfile } from "@/src/lib/agent-session";
 
 const LIFECYCLE_ORDER: ReceiptLifecycleState[] = [
   "ENTRY",
@@ -22,6 +23,7 @@ export function LedgerView({
 }) {
   const receipts = receiptsState.status === "configured" ? receiptsState.data : [];
   const markets = marketsState?.status === "configured" ? marketsState.data : [];
+  const [walletAddress] = useState(() => getAgentProfile()?.walletAddress ?? null);
   const [activeTab, setActiveTab] = useState<"timeline" | "json">("timeline");
   const [selectedReceiptId, setSelectedReceiptId] = useState<string | null>(receipts[0]?.receiptId ?? null);
 
@@ -88,7 +90,7 @@ export function LedgerView({
       )}
 
       {!selectedReceipt ? (
-        /* ── Empty / error state ── */
+        /* Empty / error state */
         <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-violet-400/20 bg-violet-500/[0.03] py-20 text-center">
           <Database size={32} className="text-violet-400/50" />
           <p className="font-semibold text-white">
@@ -102,7 +104,7 @@ export function LedgerView({
               : "No Arc testnet receipts yet. Run MarketCourt and write a receipt."}
           </p>
           <a href="/marketcourt" className="rounded-xl bg-violet-600 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-violet-500">
-            Go to MarketCourt →
+            Go to MarketCourt -&gt;
           </a>
         </div>
       ) : (
@@ -143,8 +145,11 @@ export function LedgerView({
                   { label: "Platform", value: selectedMarket?.platform ?? "Not indexed" },
                   { label: "Market URL", value: selectedMarket?.marketUrl ? shortValue(selectedMarket.marketUrl) : "Not indexed" },
                   { label: "Agent ID", value: selectedReceipt.agentId },
+                  { label: "Wallet Address", value: walletAddress ? shortValue(walletAddress) : "Not connected" },
+                  { label: "Receipt Writer", value: selectedReceipt.writer ? shortValue(selectedReceipt.writer) : "Not indexed" },
+                  { label: "Transaction Hash", value: selectedReceipt.txHash ? shortValue(selectedReceipt.txHash) : "Pending" },
                   { label: "Reasoning Hash", value: selectedReceipt.reasoningHash.slice(0, 18) + "..." },
-                  { label: "Signal Hash", value: (selectedReceipt.signalHash?.slice(0, 18) ?? "—") + "..." },
+                  { label: "Signal Hash", value: (selectedReceipt.signalHash?.slice(0, 18) ?? "-") + "..." },
                   { label: "Suggested USDC", value: `${selectedReceipt.suggestedUsdcAmount} USDC` },
                 ].map((row) => (
                   <div key={row.label}>
@@ -207,11 +212,11 @@ export function LedgerView({
             </div>
 
             <div className="flex items-start gap-3 rounded-2xl border border-violet-400/15 bg-violet-500/[0.04] p-4">
-              <LockKeyhole size={16} className="mt-0.5 shrink-0 text-violet-400" />
+              <Wallet size={16} className="mt-0.5 shrink-0 text-violet-400" />
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-violet-400">Quantum Secure</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-violet-400">Agent Wallet Route</p>
                 <p className="mt-1 text-xs leading-5 text-zinc-400">
-                  All ledger entries are signed with FALCON-512 signatures for long-term stability.
+                  Receipt writes are linked to the Arc testnet writer and active Agent Wallet context.
                 </p>
               </div>
             </div>
@@ -242,7 +247,6 @@ export function LedgerView({
                   const stateIdx = LIFECYCLE_ORDER.indexOf(state);
                   const isDone = stateIdx < currentIdx;
                   const isActive = stateIdx === currentIdx;
-                  const isPending = stateIdx > currentIdx;
 
                   const STEP_INFO: Record<ReceiptLifecycleState, { title: string; body: string }> = {
                     ENTRY: {
@@ -347,5 +351,5 @@ function formatTs(ts: string): string {
   const n = Number(ts);
   if (n) return new Intl.DateTimeFormat("en", { dateStyle: "medium", timeStyle: "short" }).format(new Date(n * 1000));
   if (ts) return new Date(ts).toLocaleString();
-  return "—";
+  return "-";
 }

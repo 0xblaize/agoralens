@@ -37,7 +37,8 @@ contract ReasoningReceiptRegistry {
         uint256 indexed marketId,
         bytes32 indexed reasoningHash,
         uint16 integrityScore,
-        string decision
+        string decision,
+        address writer
     );
 
     event LifecycleUpdated(uint256 indexed receiptId, LifecycleState lifecycleState);
@@ -78,7 +79,7 @@ contract ReasoningReceiptRegistry {
         });
 
         receiptsByAgentHash[keccak256(bytes(agentId))].push(receiptId);
-        emit ReceiptWritten(receiptId, agentId, marketId, reasoningHash, integrityScore, decision);
+        emit ReceiptWritten(receiptId, agentId, marketId, reasoningHash, integrityScore, decision, msg.sender);
     }
 
     function updateLifecycleState(uint256 receiptId, LifecycleState lifecycleState) external {

@@ -75,6 +75,7 @@ export function handleReceiptWritten(event: ReceiptWritten): void {
   receipt.decision = event.params.decision;
   receipt.lifecycleState = "ENTRY";
   receipt.timestamp = event.block.timestamp;
+  receipt.writer = event.params.writer;
   receipt.txHash = event.transaction.hash;
   receipt.save();
 }

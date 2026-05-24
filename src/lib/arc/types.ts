@@ -35,6 +35,7 @@ export type ReasoningReceipt = {
   decision: string;
   lifecycleState: ReceiptLifecycleState;
   timestamp: string;
+  writer?: string;
   txHash?: string;
   source: "subgraph" | "rpc";
 };
