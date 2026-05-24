@@ -112,7 +112,7 @@ export function MarketCourtView({ marketsState, signalsState, preselectedMarketI
       : "text-rose-400";
 
   return (
-    <section id="marketcourt" className="space-y-5">
+    <section id="marketcourt" className="relative z-10 max-w-full space-y-5 overflow-x-hidden pb-28 md:pb-0">
       {/* Header */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
@@ -244,17 +244,17 @@ export function MarketCourtView({ marketsState, signalsState, preselectedMarketI
       )}
 
       {/* Three-column agent grid */}
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="relative z-10 grid max-w-full gap-4 lg:grid-cols-3">
         {/* Bull */}
-        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
-          <div className="flex items-center gap-3">
-            <img src="/agent-bull.png" alt="Bull Agent" className="size-10 rounded-full object-cover ring-2 ring-violet-400/30" />
-            <div>
+        <div className="order-1 max-w-full overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
+          <div className="flex min-w-0 items-center gap-3">
+            <img src="/agent-bull.png" alt="Bull Agent" className="size-10 shrink-0 rounded-full object-cover ring-2 ring-violet-400/30" />
+            <div className="min-w-0">
               <h3 className="font-bold text-white">Bull Agent</h3>
               <p className="text-[10px] font-bold uppercase tracking-widest text-violet-400">Optimistic Outlook</p>
             </div>
           </div>
-          <div className="mt-4 min-h-[80px] rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
+          <div className="mt-4 min-h-[80px] max-w-full break-words rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
             {audit ? (
               <p className="text-sm italic leading-6 text-zinc-300">&ldquo;{audit.bullArgument}&rdquo;</p>
             ) : (
@@ -278,18 +278,18 @@ export function MarketCourtView({ marketsState, signalsState, preselectedMarketI
         </div>
 
         {/* Judge */}
-        <div className="rounded-2xl border border-violet-400/20 bg-violet-500/[0.04] p-5">
-          <div className="flex items-center gap-3">
-            <img src="/agent-judge.png" alt="Judge Agent" className="size-10 rounded-full object-cover ring-2 ring-violet-400/30" />
-            <div>
+        <div className="order-3 max-w-full overflow-hidden rounded-2xl border border-violet-400/20 bg-violet-500/[0.04] p-5 lg:order-2">
+          <div className="flex min-w-0 items-center gap-3">
+            <img src="/agent-judge.png" alt="Judge Agent" className="size-10 shrink-0 rounded-full object-cover ring-2 ring-violet-400/30" />
+            <div className="min-w-0">
               <h3 className="font-bold text-white">Judge Agent</h3>
             </div>
-            <span className={`ml-auto rounded-full px-2.5 py-0.5 text-[10px] font-bold ${loading ? "bg-amber-500/20 text-amber-300" : audit ? "bg-emerald-500/20 text-emerald-300" : "bg-violet-500/20 text-violet-300"}`}>
+            <span className={`ml-auto shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${loading ? "bg-amber-500/20 text-amber-300" : audit ? "bg-emerald-500/20 text-emerald-300" : "bg-violet-500/20 text-violet-300"}`}>
               {loading ? "Synthesizing" : audit ? "Complete" : "Standby"}
             </span>
           </div>
 
-          <div className="mt-4 rounded-xl bg-[#0a0a14] p-3 font-mono text-[11px] leading-6 min-h-[100px]">
+          <div className="mt-4 min-h-[100px] max-w-full break-words rounded-xl bg-[#0a0a14] p-3 font-mono text-[11px] leading-6">
             <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-white">
               {loading ? "Live Reasoning Log" : audit ? "MarketCourt Verdict" : "Awaiting Input"}
             </p>
@@ -311,7 +311,7 @@ export function MarketCourtView({ marketsState, signalsState, preselectedMarketI
           </div>
 
           {audit && (
-            <div className="mt-4 rounded-xl border border-violet-400/20 bg-violet-500/[0.08] p-4">
+            <div className="mt-4 max-w-full break-words rounded-xl border border-violet-400/20 bg-violet-500/[0.08] p-4">
               <p className="text-[10px] font-bold uppercase tracking-widest text-violet-400">Final Verdict</p>
               <h3 className={`mt-2 text-lg font-bold ${decisionColor}`}>
                 {audit.decision.replace(/_/g, " ")}
@@ -325,16 +325,16 @@ export function MarketCourtView({ marketsState, signalsState, preselectedMarketI
           <button
             onClick={runAudit}
             disabled={loading || !selectedMarket}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 py-2.5 text-sm font-bold text-white shadow-[0_6px_20px_rgba(124,58,237,0.35)] transition hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 py-2.5 text-sm font-bold text-white shadow-[0_6px_20px_rgba(124,58,237,0.35)] transition md:hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Gavel size={15} />
             {loading ? "Running Audit..." : audit ? "Re-run Audit" : "Run MarketCourt Audit"}
           </button>
 
           {error && (
-            <div className="mt-3 rounded-xl border border-rose-400/25 bg-rose-500/[0.06] p-4">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-rose-400 mb-1">Audit Error</p>
-              <p className="text-sm text-rose-300 leading-5">{error}</p>
+            <div className="mt-3 max-w-full break-words rounded-xl border border-rose-400/25 bg-rose-500/[0.06] p-4">
+              <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-rose-400">Audit Error</p>
+              <p className="text-sm leading-5 text-rose-300">{error}</p>
               <p className="mt-2 text-[10px] text-zinc-600">
                 Check GEMINI_API_KEY and GEMINI_MODEL in .env.local, then restart the dev server.
               </p>
@@ -343,15 +343,15 @@ export function MarketCourtView({ marketsState, signalsState, preselectedMarketI
         </div>
 
         {/* Bear */}
-        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
-          <div className="flex items-center gap-3">
-            <img src="/agent-bear.png" alt="Bear Agent" className="size-10 rounded-full object-cover ring-2 ring-rose-400/30" />
-            <div>
+        <div className="order-2 max-w-full overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 lg:order-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <img src="/agent-bear.png" alt="Bear Agent" className="size-10 shrink-0 rounded-full object-cover ring-2 ring-rose-400/30" />
+            <div className="min-w-0">
               <h3 className="font-bold text-white">Bear Agent</h3>
               <p className="text-[10px] font-bold uppercase tracking-widest text-rose-400">Risk Scepticism</p>
             </div>
           </div>
-          <div className="mt-4 min-h-[80px] rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
+          <div className="mt-4 min-h-[80px] max-w-full break-words rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
             {audit ? (
               <p className="text-sm italic leading-6 text-zinc-300">&ldquo;{audit.bearArgument}&rdquo;</p>
             ) : (
@@ -361,9 +361,9 @@ export function MarketCourtView({ marketsState, signalsState, preselectedMarketI
           {audit && audit.riskFlags.length > 0 && (
             <div className="mt-4">
               <p className="text-[10px] font-bold uppercase tracking-widest text-rose-400">Risk Flags</p>
-              <div className="mt-2 rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
+              <div className="mt-2 overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.02]">
                 {audit.riskFlags.map((flag) => (
-                  <div key={flag} className="border-b border-white/[0.05] px-3 py-2 text-xs text-rose-300 last:border-0">
+                  <div key={flag} className="break-words border-b border-white/[0.05] px-3 py-2 text-xs text-rose-300 last:border-0">
                     ⚠ {flag}
                   </div>
                 ))}
@@ -380,7 +380,7 @@ export function MarketCourtView({ marketsState, signalsState, preselectedMarketI
 
       {/* Audit progress + CTA */}
       {audit && (
-        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] px-5 py-4">
+        <div className="max-w-full overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.02] px-5 py-4">
           <div className="flex items-center gap-1.5">
             <p className="text-xs font-bold text-zinc-400">Audit Progress</p>
             <span className="rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] font-bold text-emerald-400">Complete</span>

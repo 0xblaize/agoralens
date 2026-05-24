@@ -19,7 +19,7 @@ export function DashboardNav() {
   return (
     <>
       {/* Desktop top header */}
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#161620]/90 backdrop-blur-2xl">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#161620] md:bg-[#161620]/90 md:backdrop-blur-2xl">
         <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-4 md:px-8">
           {/* Left: logo + nav links */}
           <div className="flex items-center gap-6">
@@ -51,7 +51,7 @@ export function DashboardNav() {
       </header>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-white/10 bg-[#15151d]/95 px-3 py-3 backdrop-blur-2xl md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-white/10 bg-[#15151d] px-3 py-3 md:hidden">
         {tabs.map((tab) => {
           const active = pathname === tab.href;
           return (

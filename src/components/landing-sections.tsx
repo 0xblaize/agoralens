@@ -218,7 +218,7 @@ export function MarketCourtPreview() {
   ];
 
   return (
-    <section className="mx-auto w-full max-w-[1440px] px-6 py-[90px] sm:px-10 md:py-28 lg:px-16 lg:py-[134px]">
+    <section className="relative z-10 mx-auto w-full max-w-[1440px] overflow-x-hidden px-6 py-[90px] sm:px-10 md:py-28 lg:px-16 lg:py-[134px]">
       {/* Header row */}
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
@@ -237,15 +237,15 @@ export function MarketCourtPreview() {
       </div>
 
       {/* Agent cards */}
-      <div className="mt-12 grid gap-5 lg:grid-cols-3">
+      <div className="relative z-10 mt-12 grid max-w-full gap-5 lg:grid-cols-3">
         {agents.map((agent) => (
           <article
             key={agent.name}
-            className="flex flex-col rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-colors hover:border-white/[0.1] hover:bg-white/[0.04]"
+            className="relative z-10 flex max-w-full flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-colors md:hover:border-white/[0.1] md:hover:bg-white/[0.04]"
           >
             {/* Avatar row */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div className="flex min-w-0 items-center justify-between">
+              <div className="flex min-w-0 items-center gap-3">
                 {/* Agent avatar with online dot */}
                 <div className="relative shrink-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -256,8 +256,8 @@ export function MarketCourtPreview() {
                   />
                   <span className="absolute bottom-0 right-0 size-3 rounded-full border-2 border-[#101018] bg-emerald-400" />
                 </div>
-                <div>
-                  <h3 className="font-bold text-white">{agent.name}</h3>
+                <div className="min-w-0">
+                  <h3 className="break-words font-bold text-white">{agent.name}</h3>
                   <p className={`flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide ${agent.roleCls}`}>
                     <Gavel size={11} />
                     {agent.role}
@@ -267,7 +267,7 @@ export function MarketCourtPreview() {
             </div>
 
             {/* Bias pill + engine badge */}
-            <div className="mt-4 flex items-center gap-2">
+            <div className="mt-4 flex flex-wrap items-center gap-2">
               <span className={`rounded-full px-3 py-1 text-[11px] font-bold ${agent.biasCls}`}>
                 {agent.bias}
               </span>
@@ -277,12 +277,12 @@ export function MarketCourtPreview() {
             </div>
 
             {/* Audit log panel */}
-            <div className="mt-5 flex-1 rounded-xl bg-white/[0.03] p-4">
+            <div className="mt-5 max-w-full flex-1 break-words rounded-xl bg-white/[0.03] p-4">
               <p className="mb-3 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-violet-400">
                 <Zap size={10} />
                 Latest_Audit_Log
               </p>
-              <p className="text-sm leading-[1.7] text-zinc-300">{agent.log}</p>
+              <p className="break-words text-sm leading-[1.7] text-zinc-300">{agent.log}</p>
             </div>
 
             {/* View Agent Logic */}

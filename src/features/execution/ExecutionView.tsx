@@ -71,7 +71,7 @@ export function ExecutionView() {
   }
 
   return (
-    <section id="execution" className="space-y-5">
+    <section id="execution" className="relative z-10 max-w-full space-y-5 overflow-x-hidden pb-28 md:pb-0">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-white md:text-4xl">Execution</h1>
@@ -165,7 +165,7 @@ export function ExecutionView() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-cyan-400/15 bg-cyan-500/[0.04] p-5 md:p-6">
+          <div className="relative z-10 max-w-full overflow-hidden rounded-2xl border border-cyan-400/15 bg-cyan-500/[0.04] p-5 md:p-6">
             <div className="flex items-center gap-2">
               <Wallet size={15} className="text-cyan-300" />
               <h2 className="font-bold text-white">Wallet Route</h2>
@@ -173,7 +173,7 @@ export function ExecutionView() {
                 Testnet
               </span>
             </div>
-            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            <div className="mt-4 grid max-w-full gap-2 sm:grid-cols-2">
               {[
                 ["From", agentWallet ? `Agent Wallet ${agentWallet.slice(0, 6)}...${agentWallet.slice(-4)}` : "Agent Wallet"],
                 ["Network", "Arc Testnet"],
@@ -184,7 +184,7 @@ export function ExecutionView() {
               ].map(([label, value]) => (
                 <div
                   key={label}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-2.5"
+                  className="flex min-w-0 items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-2.5"
                 >
                   <span className="text-[11px] font-bold uppercase tracking-widest text-zinc-500">{label}</span>
                   <span className="min-w-0 truncate text-right text-xs font-semibold text-zinc-200">{value}</span>

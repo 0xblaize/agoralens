@@ -171,7 +171,7 @@ export function RadarView({
   }
 
   return (
-    <section id="radar" className="space-y-6">
+    <section id="radar" className="relative z-10 max-w-full space-y-6 overflow-x-hidden pb-28 md:pb-0">
       <div className="flex items-start gap-4">
         <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-violet-500/15 text-violet-300 ring-1 ring-violet-400/25">
           <RadioTower size={22} />
