@@ -288,7 +288,7 @@ export function ExecutionView() {
             <button
               onClick={writeReceipt}
               disabled={deploying}
-              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-violet-600 via-fuchsia-500 to-violet-600 py-4 text-base font-bold text-white shadow-[0_10px_30px_rgba(124,58,237,0.4)] transition hover:scale-[1.01] disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-violet-600 via-fuchsia-500 to-violet-600 py-4 text-base font-bold text-white shadow-[0_10px_30px_rgba(124,58,237,0.4)] transition md:hover:scale-[1.01] disabled:opacity-60"
             >
               {deploying ? "Writing Receipt to Arc Testnet..." : "Write Reasoning Receipt to Arc Testnet"} <Zap size={18} />
             </button>

@@ -30,8 +30,8 @@ export async function DashboardShell() {
   const arcStatus = getSafeArcStatus();
 
   return (
-    <main className="min-h-screen bg-[#15151d] pb-24 text-white md:pb-0">
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#161620]/90 backdrop-blur-2xl">
+    <main className="isolate min-h-screen overflow-x-hidden bg-[#15151d] pb-28 text-white md:pb-0">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#161620] md:bg-[#161620]/90 md:backdrop-blur-2xl">
         <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-5 md:px-8">
           <div className="flex items-center gap-8">
             <BrandLogo />
@@ -51,7 +51,7 @@ export async function DashboardShell() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1440px] space-y-10 px-5 py-8 md:px-8 md:py-12">
+      <div className="relative z-10 mx-auto max-w-[1440px] space-y-10 overflow-x-hidden px-5 py-8 md:px-8 md:py-12">
         <RadarView
           arcMarketsState={arcMarketsState}
           externalMarketsState={externalMarketsState}
@@ -64,7 +64,7 @@ export async function DashboardShell() {
         <LedgerView receiptsState={receiptsState} marketsState={arcMarketsState} />
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-white/10 bg-[#15151d]/95 px-3 py-3 backdrop-blur-2xl md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-white/10 bg-[#15151d] px-3 py-3 md:hidden">
         {tabs.map((tab) => (
           <Link key={tab.href} href={tab.href} className="flex flex-col items-center gap-1 text-xs font-medium text-zinc-400">
             <tab.icon size={22} />

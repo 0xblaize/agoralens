@@ -529,7 +529,7 @@ function MarketCard({
 
   return (
     <article
-      className={`rounded-2xl border p-4 transition ${
+      className={`relative z-10 max-w-full overflow-hidden rounded-2xl border p-4 transition ${
         isMatched
           ? "border-violet-400/30 bg-violet-500/[0.06]"
           : "border-white/[0.07] bg-white/[0.02]"
@@ -554,7 +554,7 @@ function MarketCard({
         )}
       </div>
 
-      <h2 className="mt-3 text-base font-bold leading-snug text-white">{market.question}</h2>
+      <h2 className="mt-3 break-words text-base font-bold leading-snug text-white">{market.question}</h2>
 
       {matchedTerms.length > 0 && (
         <p className="mt-1 text-[11px] text-violet-300">
@@ -613,7 +613,7 @@ function MarketCard({
         type="button"
         onClick={onImport}
         disabled={importing || !importEligibility.ok}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 via-fuchsia-500 to-blue-600 py-3 text-sm font-bold text-white shadow-[0_8px_24px_rgba(124,58,237,0.35)] transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 via-fuchsia-500 to-blue-600 py-3 text-sm font-bold text-white shadow-[0_8px_24px_rgba(124,58,237,0.35)] transition md:hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {importing ? "Importing to Arc..." : "Import to Arc & Send to MarketCourt"}
       </button>
