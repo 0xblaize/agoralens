@@ -2,6 +2,8 @@
 
 AgoraLens is an AI market integrity agent for prediction markets. It connects live signal sources to live market feeds, imports selected markets to Arc Testnet, runs MarketCourt AI audits, writes reasoning receipts, and tracks the receipt lifecycle in Ledger.
 
+https://youtu.be/enopirenKdc
+
 ## What AgoraLens Does
 
 - Loads live public signals from GDELT and Google News RSS.
